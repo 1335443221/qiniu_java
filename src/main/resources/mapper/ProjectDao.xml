@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sl.priceapp.dao.ProjectDao">
+
+	
+	<!-- 分类列表 -->
+	<select id="project_list" parameterType="java.util.Map"  resultType="java.util.Map">
+ 		select p.id project_id,project_name,address_province,address_city,total_price from `project` p where 1=1
+ 		<if test="search_name != null and search_name !=''">
+			and project_name like CONCAT('%',#{search_name},'%')   
+		</if>
+	</select>
+	
+	
+	<select id="getProjectMaxId"  resultType="Integer">
+ 		SELECT MAX(id) FROM `project`
+	</select>
+	
+	
+	<insert id="add_project" parameterType="java.util.Map">
+		insert into `project`
+		(project_name,address_province,address_city,total_price,create_at)
+		values
+		(	#{project_name},
+		 	#{address_province},
+		 	#{address_city},
+			#{total_price},
+			#{create_at}
+		)
+	</insert>
+	
+	
+	<insert id="add_project_product" parameterType="java.util.Map">
+		insert into `project_product_relation`
+		(project_id,product_id,product_count)
+		values
+		(	#{project_id},
+		 	#{product_id},
+			#{product_count}
+		)
+	</insert>
+	
+	
+	<delete id="deleteProductByProject" parameterType="Integer">
+	delete from `project_product_relation` where project_id=#{project_id}
+	</delete>
+	
+	
+	<update id="update_project" parameterType="java.util.Map">
+	update `project` p
+		<set>
+			<if test="project_name != null">project_name=#{project_name, jdbcType=VARCHAR},</if>
+			<if test="address_province != null">address_province=#{address_province, jdbcType=VARCHAR},</if>
+			<if test="address_city != null">address_city=#{address_city, jdbcType=VARCHAR},</if>
+			<if test="total_price != null">total_price=#{total_price, jdbcType=DOUBLE}</if>
+		</set>
+	where p.id=#{project_id}
+	</update>
+	
+	
+	<!-- 单个项目 -->
+	<select id="getProjectById" parameterType="Integer"  resultType="java.util.Map">
+ 		select id project_id,project_name,address_province,address_city,total_price
+ 		 from `project` p  where p.id=#{project_id}
+	</select>
+	
+	
+	<!-- 项目下产品 -->
+	<select id="getProductByProject" parameterType="Integer"  resultType="java.util.Map">
+ 		SELECT p.id product_id,p.product_name,p.model,p.param,p.unit,p.trademark,p.unit_price,r.product_count 
+ 		FROM `project_product_relation` r 
+ 		INNER JOIN `product` p ON r.product_id=p.id 
+ 		where r.project_id=#{project_id}
+	</select>
+	
+	
+	
+</mapper>

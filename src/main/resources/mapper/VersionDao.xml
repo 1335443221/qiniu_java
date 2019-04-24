@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sl.priceapp.dao.VersionDao">
+
+	<select id="query" resultType="java.util.HashMap">
+		SELECT
+		id,v.version,v.description,download_url,is_force,upload_at FROM
+		`version` v
+		ORDER BY id DESC
+	</select>
+
+
+
+	<update id="update">
+		UPDATE `version` v
+		<set>
+			<if test="version != null">version=#{version},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="download_url != null">download_url=#{download_url},</if>
+			<if test="is_force != null">is_force=#{is_force},</if>
+			<if test="upload_at != null">upload_at=#{upload_at}</if>
+
+		</set>
+		where v.id=#{id}
+	</update>
+
+	<delete id="delete">
+		delete from `version`
+		where id=#{id}
+	</delete>
+	<insert id="save">
+		insert into `version`
+		(version,description,download_url,is_force,upload_at)
+		values
+		(
+		<choose>
+			<when test="version != null and version != ''">#{version},</when>
+			<otherwise>'',</otherwise>
+		</choose>
+		<choose>
+			<when test="description != null and description != ''">#{description},</when>
+			<otherwise>'',</otherwise>
+		</choose>
+		<choose>
+			<when test="download_url != null and download_url != ''">#{download_url},</when>
+			<otherwise>'',</otherwise>
+		</choose>
+		<choose>
+			<when test="is_force != null and is_force != ''">#{is_force},</when>
+			<otherwise>'',</otherwise>
+		</choose>
+		<choose>
+			<when test="upload_at != null and upload_at != ''">#{upload_at}</when>
+			<otherwise>''</otherwise>
+		</choose>
+
+		)
+	</insert>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sl.priceapp.dao.UserDao">
+
+	
+	<!-- 登陆验证 -->
+	<select id="checkLogin" parameterType="java.util.Map" resultType="java.util.Map">
+ 		select * from `user`
+ 		where phone =#{phone} and pwd =#{pwd}
+	</select>
+	
+	
+	<!-- 手机号重复验证 -->
+	<select id="checkPhone" parameterType="java.util.Map" resultType="java.util.Map">
+ 		select * from `user` 
+ 		where phone =#{phone}
+	</select>
+	
+	<!-- 注册用户 -->
+	<insert id="registerUser" parameterType="java.util.Map">
+		insert into `user`
+		(phone,user_name,company_name,pwd,create_at)
+		values
+		(	#{phone},
+		 	#{user_name},
+			#{company_name},
+			#{pwd},
+			#{create_at}
+		)
+	</insert>
+	
+	<!-- 查找一个 -->
+	<select id="selectById" parameterType="Integer"  resultType="java.util.Map">
+ 		select * from `user` u
+ 		where u.id =#{id}
+	</select>
+	
+	<!-- 根据id改变 -->
+	<update id="updateById" parameterType="java.util.Map">
+	update `user` u
+		<set>
+			<if test="phone != null">phone=#{phone},</if>
+			<if test="user_name != null">user_name=#{user_name},</if>
+			<if test="company_name != null">company_name=#{company_name},</if>
+			<if test="newpwd != null">pwd=#{newpwd}</if>
+		</set>
+		where u.id=#{id}
+	</update>
+	
+	
+	
+	
+</mapper>
